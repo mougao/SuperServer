@@ -1,0 +1,11 @@
+F:\Work\SuperServerTest\SuperServerTest\bin\Debug\SuperServerTest.exe.config
+F:\Work\SuperServerTest\SuperServerTest\bin\Debug\SuperServerTest.exe
+F:\Work\SuperServerTest\SuperServerTest\bin\Debug\SuperServerTest.pdb
+F:\Work\SuperServerTest\SuperServerTest\obj\Debug\SuperServerTest.csprojResolveAssemblyReference.cache
+F:\Work\SuperServerTest\SuperServerTest\obj\Debug\SuperServerTest.exe
+F:\Work\SuperServerTest\SuperServerTest\obj\Debug\SuperServerTest.pdb
+F:\Work\SuperServerTest\SuperServerTest\bin\Debug\SuperServer.dll
+F:\Work\SuperServerTest\SuperServerTest\bin\Debug\SuperServer.pdb
+F:\OtherWork\SuperServer\SuperServerTest\SuperServerTest\bin\Debug\SuperServerTest.exe.config
+F:\OtherWork\SuperServer\SuperServerTest\SuperServerTest\obj\Debug\SuperServerTest.exe
+F:\OtherWork\SuperServer\SuperServerTest\SuperServerTest\obj\Debug\SuperServerTest.pdb

@@ -1,0 +1,6 @@
+F:\Work\SuperServerTest\ClientTest\bin\Debug\ClientTest.exe.config
+F:\Work\SuperServerTest\ClientTest\bin\Debug\ClientTest.exe
+F:\Work\SuperServerTest\ClientTest\bin\Debug\ClientTest.pdb
+F:\Work\SuperServerTest\ClientTest\obj\Debug\ClientTest.exe
+F:\Work\SuperServerTest\ClientTest\obj\Debug\ClientTest.pdb
+F:\Work\SuperServerTest\ClientTest\obj\Debug\ClientTest.csprojResolveAssemblyReference.cache

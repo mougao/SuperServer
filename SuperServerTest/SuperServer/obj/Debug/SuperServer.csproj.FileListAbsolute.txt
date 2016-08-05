@@ -1,0 +1,5 @@
+F:\Work\SuperServerTest\SuperServer\bin\Debug\SuperServer.dll
+F:\Work\SuperServerTest\SuperServer\bin\Debug\SuperServer.pdb
+F:\Work\SuperServerTest\SuperServer\obj\Debug\SuperServer.dll
+F:\Work\SuperServerTest\SuperServer\obj\Debug\SuperServer.pdb
+F:\Work\SuperServerTest\SuperServer\obj\Debug\SuperServer.csprojResolveAssemblyReference.cache
