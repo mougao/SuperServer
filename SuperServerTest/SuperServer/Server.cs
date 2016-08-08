@@ -25,7 +25,7 @@ namespace SuperServer
 
             IPAddress ip = IPAddress.Parse(ServerConfig.IP);
             IPEndPoint ipe = new IPEndPoint(ip, ServerConfig.Port);
-
+            
             AsyncServer server = new AsyncServer(100, 1024);
 
             server.Init();

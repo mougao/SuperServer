@@ -25,7 +25,7 @@ namespace SuperServer
         //
         //The "item" parameter is the SocketAsyncEventArgs instance 
         // to add to the pool
-        public void Push(SocketAsyncEventArgs item)
+        public void Push(SocketAsyncEventArgs item) 
         {
             if (item == null) { throw new ArgumentNullException("Items added to a SocketAsyncEventArgsPool cannot be null"); }
             lock (m_pool)
