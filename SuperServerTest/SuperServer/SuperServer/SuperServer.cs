@@ -18,24 +18,23 @@ namespace SuperServer
         {
             if (config == null)
                 return;
-            
+            _NumConnectedSockets = 0;
             IPAddress ip = IPAddress.Parse(config.IP);
             _Ipe = new IPEndPoint(ip, config.Port);
             _NumConnections = config.NumConnections;
             _ReceiveBufferSize = config.ReceiveBufferSize;
+
+            _BufferPool = new BufferManager(_ReceiveBufferSize * _NumConnections * opsToPreAlloc,
+                _ReceiveBufferSize);
+
+            _MaxNumberAcceptedClients = new Semaphore(_NumConnections, _NumConnections);
         }
         /// <summary>
         /// 服务器初始化
         /// </summary>
         public void Init()
         {
-            _BufferPool = new BufferManager(_ReceiveBufferSize * _NumConnections * opsToPreAlloc,
-                _ReceiveBufferSize);
-
-            _TotalBytesRead = 0;
-            _NumConnectedSockets = 0;
-
-            _MaxNumberAcceptedClients = new Semaphore(_NumConnections, _NumConnections);
+            _BufferPool.InitBuffer();
         }
         /// <summary>
         /// 服务器启动
@@ -43,6 +42,8 @@ namespace SuperServer
         /// <returns></returns>
         public bool Start()
         {
+            Init();
+
             if (_Ipe == null)
                 return false;
 
@@ -51,6 +52,9 @@ namespace SuperServer
             _ListenSocket.Listen(_Ipe.Port);
 
             StartAccept(null);
+
+            Console.WriteLine("Press any key to terminate the server process....");
+            Console.ReadKey();
             return true;
         }
         /// <summary>
@@ -98,14 +102,18 @@ namespace SuperServer
                 _NumConnectedSockets);
 
             Session session = new Session();
-            session.Init(_BufferPool, e.AcceptSocket);
+
+            session.Init(_BufferPool, e.AcceptSocket, (ss) =>
+            {
+                CloseClientSocket(ss);
+
+            });
 
             _Sessions.Add(session);
 
-            session.ProcessReceive();
-
             StartAccept(e);
         }
+
 
         public void CloseClientSocket(Session session)
         {
@@ -147,11 +155,7 @@ namespace SuperServer
         /// <summary>
         /// 监听Socket
         /// </summary>
-        private Socket _ListenSocket;
-        /// <summary>
-        /// 总共读取的字节数量
-        /// </summary>
-        private int _TotalBytesRead;           
+        private Socket _ListenSocket;         
         /// <summary>
         /// 当前连接数量
         /// </summary>

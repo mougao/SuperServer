@@ -22,7 +22,7 @@ namespace ClientTest
                 Console.WriteLine("Conneting...");
                 c.Connect(ipe);//连接到服务器
 
-                for (int i=0;i<2;i++)
+                for (int i=0;i<3;i++)
                 {
                     string sendStr = "hello!This is a socket test";
                     byte[] bs = Encoding.ASCII.GetBytes(sendStr);

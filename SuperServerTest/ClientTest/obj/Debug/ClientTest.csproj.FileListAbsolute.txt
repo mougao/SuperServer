@@ -7,3 +7,5 @@ F:\Work\SuperServerTest\ClientTest\obj\Debug\ClientTest.csprojResolveAssemblyRef
 F:\OtherWork\SuperServer\SuperServerTest\ClientTest\bin\Debug\ClientTest.exe.config
 F:\OtherWork\SuperServer\SuperServerTest\ClientTest\obj\Debug\ClientTest.exe
 F:\OtherWork\SuperServer\SuperServerTest\ClientTest\obj\Debug\ClientTest.pdb
+F:\OtherWork\SuperServer\SuperServerTest\ClientTest\bin\Debug\ClientTest.exe
+F:\OtherWork\SuperServer\SuperServerTest\ClientTest\bin\Debug\ClientTest.pdb

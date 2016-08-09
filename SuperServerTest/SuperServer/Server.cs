@@ -23,14 +23,20 @@ namespace SuperServer
             //加载服务器配置
             SuperServerConfig ServerConfig = (SuperServerConfig)System.Configuration.ConfigurationManager.GetSection("SuperServerConfig");
 
-            IPAddress ip = IPAddress.Parse(ServerConfig.IP);
-            IPEndPoint ipe = new IPEndPoint(ip, ServerConfig.Port);
-            
-            AsyncServer server = new AsyncServer(100, 1024);
+            //IPAddress ip = IPAddress.Parse(ServerConfig.IP);
+            //IPEndPoint ipe = new IPEndPoint(ip, ServerConfig.Port);
 
-            server.Init();
+            //AsyncServer server = new AsyncServer(100, 1024);
 
-            server.Start(ipe);
+            //server.Init();
+
+            //server.Start(ipe);
+
+            SuperServer server = new SuperServer(ServerConfig);
+
+            server.Start();
+
+
 
             return ret;
         }

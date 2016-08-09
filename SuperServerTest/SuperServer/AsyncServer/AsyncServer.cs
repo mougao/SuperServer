@@ -190,7 +190,8 @@ namespace SuperServer
                 //increment the count of the total bytes receive by the server
                 Interlocked.Add(ref m_totalBytesRead, e.BytesTransferred);
                 Console.WriteLine("The server has read a total of {0} bytes", m_totalBytesRead);
-
+                string recvStr = Encoding.ASCII.GetString(e.Buffer, e.Offset, e.BytesTransferred);
+                Console.WriteLine("收到信息内容：{0} ", recvStr);
                 //echo the data received back to the client
                 e.SetBuffer(e.Offset, e.BytesTransferred);
                 bool willRaiseEvent = token.Socket.SendAsync(e);
