@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SuperServer
@@ -30,6 +31,11 @@ namespace SuperServer
         {
             _BufferPool = new BufferManager(_ReceiveBufferSize * _NumConnections * opsToPreAlloc,
                 _ReceiveBufferSize);
+
+            _TotalBytesRead = 0;
+            _NumConnectedSockets = 0;
+
+            _MaxNumberAcceptedClients = new Semaphore(_NumConnections, _NumConnections);
         }
         /// <summary>
         /// 服务器启动
@@ -44,8 +50,7 @@ namespace SuperServer
             _ListenSocket.Bind(_Ipe);
             _ListenSocket.Listen(_Ipe.Port);
 
-            StartAccept();
-
+            StartAccept(null);
             return true;
         }
         /// <summary>
@@ -59,30 +64,68 @@ namespace SuperServer
             return ret;
         }
 
-        private void StartAccept()
+        private void StartAccept(SocketAsyncEventArgs acceptEventArg)
         {
-            
+            if (acceptEventArg == null)
+            {
+                acceptEventArg = new SocketAsyncEventArgs();
+                acceptEventArg.Completed += new EventHandler<SocketAsyncEventArgs>(AcceptEventArg_Completed);
+            }
+            else
+            {
+                acceptEventArg.AcceptSocket = null;
+            }
+
+            _MaxNumberAcceptedClients.WaitOne();
+
+            bool willRaiseEvent = _ListenSocket.AcceptAsync(acceptEventArg);
+
+            if (!willRaiseEvent)//同步完成
+            {
+                ProcessAccept(acceptEventArg);
+            }
         }
 
-        private void ProcessAccept()
+        void AcceptEventArg_Completed(object sender, SocketAsyncEventArgs e)
         {
-            
+            ProcessAccept(e);
         }
 
-        public void ProcessReceive()
+        private void ProcessAccept(SocketAsyncEventArgs e)
         {
-            
+            Interlocked.Increment(ref _NumConnectedSockets);
+            Console.WriteLine("Client connection accepted. There are {0} clients connected to the server",
+                _NumConnectedSockets);
+
+            Session session = new Session();
+            session.Init(_BufferPool, e.AcceptSocket);
+
+            _Sessions.Add(session);
+
+            session.ProcessReceive();
+
+            StartAccept(e);
         }
 
-        public void ProcessSend()
+        public void CloseClientSocket(Session session)
         {
+            try
+            {
+                session.Socket.Shutdown(SocketShutdown.Send);
+            }
+            catch (Exception)
+            {
+                //TODO::关闭连接异常
+            }
+
+            session.Socket.Close();
+            _Sessions.Remove(session);
             
+            Interlocked.Decrement(ref _NumConnectedSockets);
+            _MaxNumberAcceptedClients.Release();
+            Console.WriteLine("A client has been disconnected from the server. There are {0} clients connected to the server", _NumConnectedSockets);
         }
 
-        public void CloseClientSocket()
-        {
-            
-        }
 
         const int opsToPreAlloc = 2;
         /// <summary>
@@ -105,5 +148,22 @@ namespace SuperServer
         /// 监听Socket
         /// </summary>
         private Socket _ListenSocket;
+        /// <summary>
+        /// 总共读取的字节数量
+        /// </summary>
+        private int _TotalBytesRead;           
+        /// <summary>
+        /// 当前连接数量
+        /// </summary>
+        private int _NumConnectedSockets;      
+        /// <summary>
+        /// 信号量管理
+        /// </summary>
+        private Semaphore _MaxNumberAcceptedClients;
+        /// <summary>
+        /// 已经连接的对象集合
+        /// </summary>
+        private List<Session> _Sessions = new List<Session>();
+
     }
 }

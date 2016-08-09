@@ -46,6 +46,7 @@
     <Compile Include="Config\SuperServerConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Server.cs" />
+    <Compile Include="SuperServer\Session.cs" />
     <Compile Include="SuperServer\SuperServer.cs" />
   </ItemGroup>
   <ItemGroup />
