@@ -1,4 +1,3 @@
-﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.21005.1
@@ -30,9 +29,7 @@ Global
 		{361BCF3C-6A14-48F3-8C76-4E84AF7DDAB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{361BCF3C-6A14-48F3-8C76-4E84AF7DDAB6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BAC5C70A-52FF-4F9A-A2D1-5F53890CD5CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BAC5C70A-52FF-4F9A-A2D1-5F53890CD5CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BAC5C70A-52FF-4F9A-A2D1-5F53890CD5CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BAC5C70A-52FF-4F9A-A2D1-5F53890CD5CF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -15,10 +15,14 @@ namespace SuperServer
         public void Init(BufferManager buffermanager, Socket socket, Action<Session> callback)
         {
             _ReadEventArgs = new SocketAsyncEventArgs();
-            _ReadEventArgs.Completed += new EventHandler<SocketAsyncEventArgs>(I_Completed);
+            _ReadEventArgs.Completed += new EventHandler<SocketAsyncEventArgs>(IO_Completed);
             _ReadEventArgs.UserToken = this;
 
             buffermanager.SetBuffer(_ReadEventArgs);
+
+            _WriteEventArgs = new SocketAsyncEventArgs();
+            _WriteEventArgs.Completed += new EventHandler<SocketAsyncEventArgs>(IO_Completed);
+            _WriteEventArgs.UserToken = this;
 
             _Socket = socket;
             _CallBack = callback;
@@ -38,23 +42,13 @@ namespace SuperServer
             buffermanager.FreeBuffer(_WriteEventArgs);
         }
 
-        void I_Completed(object sender, SocketAsyncEventArgs e)
+        void IO_Completed(object sender, SocketAsyncEventArgs e)
         {
             switch (e.LastOperation)
             {
                 case SocketAsyncOperation.Receive:
                     ProcessReceive(e);
                     break;
-                default:
-                    throw new ArgumentException("The last operation completed on the socket was not a receive or send");
-            }
-
-        }
-
-        void O_Completed(object sender, SocketAsyncEventArgs e)
-        {
-            switch (e.LastOperation)
-            {
                 case SocketAsyncOperation.Send:
                     ProcessSend(e);
                     break;
@@ -63,6 +57,8 @@ namespace SuperServer
             }
 
         }
+
+ 
         /// <summary>
         /// 开始收取报文信息
         /// </summary>
@@ -84,6 +80,8 @@ namespace SuperServer
                 string recvStr = Encoding.ASCII.GetString(e.Buffer, e.Offset, e.BytesTransferred);
                 Console.WriteLine("收到信息内容：{0} ", recvStr);
 
+                Send(e.Buffer, e.Offset, e.BytesTransferred);
+
                 Receive(e);
             }
             else
@@ -96,16 +94,28 @@ namespace SuperServer
         /// 发送报文信息
         /// </summary>
         /// <param name="e"></param>
-        public void Send(SocketAsyncEventArgs e)
+        public void Send(Byte[] buff, Int32 offset, Int32 count)
         {
-            
+            _WriteEventArgs.SetBuffer(buff, offset, count);
+
+            bool willRaiseEvent = _Socket.SendAsync(_WriteEventArgs);
+            if (!willRaiseEvent)
+            {
+                ProcessSend(_WriteEventArgs);
+            }
         }
 
         public void ProcessSend(SocketAsyncEventArgs e)
         {
-
-
-
+            if (e.SocketError == SocketError.Success)
+            {
+                Console.WriteLine("发送数据！");
+            }
+            else
+            {
+                CloseSession();
+            }
+            
         }
 
         public void CloseSession()
