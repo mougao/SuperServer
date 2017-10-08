@@ -9,3 +9,9 @@ F:\OtherWork\SuperServer\SuperServerTest\ClientTest\obj\Debug\ClientTest.exe
 F:\OtherWork\SuperServer\SuperServerTest\ClientTest\obj\Debug\ClientTest.pdb
 F:\OtherWork\SuperServer\SuperServerTest\ClientTest\bin\Debug\ClientTest.exe
 F:\OtherWork\SuperServer\SuperServerTest\ClientTest\bin\Debug\ClientTest.pdb
+G:\project\SuperServer\SuperServerTest\ClientTest\bin\Debug\ClientTest.exe.config
+G:\project\SuperServer\SuperServerTest\ClientTest\bin\Debug\ClientTest.exe
+G:\project\SuperServer\SuperServerTest\ClientTest\bin\Debug\ClientTest.pdb
+G:\project\SuperServer\SuperServerTest\ClientTest\obj\Debug\ClientTest.csprojResolveAssemblyReference.cache
+G:\project\SuperServer\SuperServerTest\ClientTest\obj\Debug\ClientTest.exe
+G:\project\SuperServer\SuperServerTest\ClientTest\obj\Debug\ClientTest.pdb
