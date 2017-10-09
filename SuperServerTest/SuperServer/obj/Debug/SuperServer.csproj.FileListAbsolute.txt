@@ -9,6 +9,5 @@ F:\OtherWork\SuperServer\SuperServerTest\SuperServer\obj\Debug\SuperServer.dll
 F:\OtherWork\SuperServer\SuperServerTest\SuperServer\obj\Debug\SuperServer.pdb
 G:\project\SuperServer\SuperServerTest\SuperServer\bin\Debug\SuperServer.dll
 G:\project\SuperServer\SuperServerTest\SuperServer\bin\Debug\SuperServer.pdb
-G:\project\SuperServer\SuperServerTest\SuperServer\obj\Debug\SuperServer.csprojResolveAssemblyReference.cache
 G:\project\SuperServer\SuperServerTest\SuperServer\obj\Debug\SuperServer.dll
 G:\project\SuperServer\SuperServerTest\SuperServer\obj\Debug\SuperServer.pdb

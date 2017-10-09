@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SuperServer;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,11 +11,24 @@ namespace SuperServerTest
     {
         static void Main(string[] args)
         {
-            SuperServer.Server server = new SuperServer.Server();
-
-
+            Server server = new Server();
 
             server.Start();
+
+            while (true)
+            {
+                string cmd = Console.ReadLine();
+
+                if (cmd == "quit")
+                {
+                    server.Stop();
+                    break;
+                }
+                //主线程逻辑
+            }
+
+
+
         }
     }
 }

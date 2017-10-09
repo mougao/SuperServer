@@ -12,6 +12,8 @@ namespace SuperServer
     /// </summary>
     public class Server
     {
+        private SuperServer _CurServer=null;
+
         /// <summary>
         /// 启动
         /// </summary>
@@ -19,6 +21,10 @@ namespace SuperServer
         public bool Start()
         {
             bool ret = false;
+
+            if (_CurServer != null)
+                return ret;
+
 
             //加载服务器配置
             SuperServerConfig ServerConfig = (SuperServerConfig)System.Configuration.ConfigurationManager.GetSection("SuperServerConfig");
@@ -32,11 +38,22 @@ namespace SuperServer
 
             //server.Start(ipe);
 
-            SuperServer server = new SuperServer(ServerConfig);
+            _CurServer = new SuperServer(ServerConfig);
 
-            server.Start();
+            _CurServer.Start();
 
 
+            return ret;
+        }
+
+        public bool Stop()
+        {
+            bool ret = false;
+
+            if (_CurServer == null)
+                return ret;
+
+            _CurServer.Stop();
 
             return ret;
         }

@@ -19,10 +19,13 @@ namespace SuperServer
             if (config == null)
                 return;
             _NumConnectedSockets = 0;
+            _TotalBytesRead = 0;
             IPAddress ip = IPAddress.Parse(config.IP);
             _Ipe = new IPEndPoint(ip, config.Port);
             _NumConnections = config.NumConnections;
             _ReceiveBufferSize = config.ReceiveBufferSize;
+
+            _ReadWritePool = new SocketAsyncEventArgsPool(config.NumConnections);
 
             _BufferPool = new BufferManager(_ReceiveBufferSize * _NumConnections * opsToPreAlloc,
                 _ReceiveBufferSize);
@@ -35,6 +38,19 @@ namespace SuperServer
         public void Init()
         {
             _BufferPool.InitBuffer();
+
+            SocketAsyncEventArgs readWriteEventArg;
+
+            for (int i = 0; i < _NumConnections; i++)
+            {
+                readWriteEventArg = new SocketAsyncEventArgs();
+                readWriteEventArg.Completed += new EventHandler<SocketAsyncEventArgs>(IO_Completed);
+                readWriteEventArg.UserToken = new AsyncUserToken();
+
+                _BufferPool.SetBuffer(readWriteEventArg);
+
+                _ReadWritePool.Push(readWriteEventArg);
+            }
         }
         /// <summary>
         /// 服务器启动
@@ -53,8 +69,7 @@ namespace SuperServer
 
             StartAccept(null);
 
-            Console.WriteLine("Press any key to terminate the server process....");
-            Console.ReadKey();
+            Console.WriteLine("服务器启动成功！");
             return true;
         }
         /// <summary>
@@ -93,7 +108,7 @@ namespace SuperServer
         void AcceptEventArg_Completed(object sender, SocketAsyncEventArgs e)
         {
             ProcessAccept(e);
-        }         
+        }
 
         private void ProcessAccept(SocketAsyncEventArgs e)
         {
@@ -101,37 +116,102 @@ namespace SuperServer
             Console.WriteLine("Client connection accepted. There are {0} clients connected to the server",
                 _NumConnectedSockets);
 
-            Session session = new Session();
+            SocketAsyncEventArgs readEventArgs = _ReadWritePool.Pop();
+            ((AsyncUserToken)readEventArgs.UserToken).Socket = e.AcceptSocket;
 
-            session.Init(_BufferPool, e.AcceptSocket, (ss) =>
+            bool willRaiseEvent = e.AcceptSocket.ReceiveAsync(readEventArgs);
+
+            if (!willRaiseEvent)
             {
-                CloseClientSocket(ss);
-
-            });
-
-            _Sessions.Add(session);
+                ProcessReceive(readEventArgs);
+            }
 
             StartAccept(e);
         }
 
 
-        public void CloseClientSocket(Session session)
+        void IO_Completed(object sender, SocketAsyncEventArgs e)
         {
-            try
+            // determine which type of operation just completed and call the associated handler
+            switch (e.LastOperation)
             {
-                session.Socket.Shutdown(SocketShutdown.Send);
-            }
-            catch (Exception)
-            {
-                //TODO::关闭连接异常
+                case SocketAsyncOperation.Receive:
+                    ProcessReceive(e);
+                    break;
+                case SocketAsyncOperation.Send:
+                    ProcessSend(e);
+                    break;
+                default:
+                    throw new ArgumentException("The last operation completed on the socket was not a receive or send");
             }
 
-            session.Socket.Close();
-            _Sessions.Remove(session);
-            
+        }
+
+        private void ProcessReceive(SocketAsyncEventArgs e)
+        {
+            // check if the remote host closed the connection
+            AsyncUserToken token = (AsyncUserToken)e.UserToken;
+            if (e.BytesTransferred > 0 && e.SocketError == SocketError.Success)
+            {
+                Interlocked.Add(ref _TotalBytesRead, e.BytesTransferred);
+                Console.WriteLine("The server has read a total of {0} bytes", _TotalBytesRead);
+                string recvStr = Encoding.ASCII.GetString(e.Buffer, e.Offset, e.BytesTransferred);
+                Console.WriteLine("收到信息内容：{0} ", recvStr);
+                //echo the data received back to the client
+                e.SetBuffer(e.Offset, e.BytesTransferred);
+                bool willRaiseEvent = token.Socket.SendAsync(e);
+                if (!willRaiseEvent)
+                {
+                    ProcessSend(e);
+                }
+
+            }
+            else
+            {
+                CloseClientSocket(e);
+            }
+        }
+
+  
+        private void ProcessSend(SocketAsyncEventArgs e)
+        {
+            if (e.SocketError == SocketError.Success)
+            {
+                // done echoing data back to the client
+                AsyncUserToken token = (AsyncUserToken)e.UserToken;
+                // read the next block of data send from the client
+                bool willRaiseEvent = token.Socket.ReceiveAsync(e);
+                if (!willRaiseEvent)
+                {
+                    ProcessReceive(e);
+                }
+            }
+            else
+            {
+                CloseClientSocket(e);
+            }
+        }
+
+        private void CloseClientSocket(SocketAsyncEventArgs e)
+        {
+            AsyncUserToken token = e.UserToken as AsyncUserToken;
+
+            // close the socket associated with the client
+            try
+            {
+                token.Socket.Shutdown(SocketShutdown.Send);
+            }
+            // throws if client process has already closed
+            catch (Exception) { }
+            token.Socket.Close();
+
+            // decrement the counter keeping track of the total number of clients connected to the server
             Interlocked.Decrement(ref _NumConnectedSockets);
             _MaxNumberAcceptedClients.Release();
             Console.WriteLine("A client has been disconnected from the server. There are {0} clients connected to the server", _NumConnectedSockets);
+
+            // Free the SocketAsyncEventArg so they can be reused by another client
+            _ReadWritePool.Push(e);
         }
 
 
@@ -159,15 +239,19 @@ namespace SuperServer
         /// <summary>
         /// 当前连接数量
         /// </summary>
-        private int _NumConnectedSockets;      
+        private int _NumConnectedSockets;
+        /// <summary>
+        /// 累计读取byte数量
+        /// </summary>
+        private int _TotalBytesRead;
         /// <summary>
         /// 信号量管理
         /// </summary>
         private Semaphore _MaxNumberAcceptedClients;
         /// <summary>
-        /// 已经连接的对象集合
+        /// 当前空闲连接对象集合
         /// </summary>
-        private List<Session> _Sessions = new List<Session>();
+        SocketAsyncEventArgsPool _ReadWritePool;
 
     }
 }
