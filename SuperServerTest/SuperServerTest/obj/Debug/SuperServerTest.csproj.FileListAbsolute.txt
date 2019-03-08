@@ -22,3 +22,13 @@ G:\project\SuperServer\SuperServerTest\SuperServerTest\bin\Debug\SuperServer.pdb
 G:\project\SuperServer\SuperServerTest\SuperServerTest\obj\Debug\SuperServerTest.csprojResolveAssemblyReference.cache
 G:\project\SuperServer\SuperServerTest\SuperServerTest\obj\Debug\SuperServerTest.exe
 G:\project\SuperServer\SuperServerTest\SuperServerTest\obj\Debug\SuperServerTest.pdb
+C:\Users\mougao\Documents\GitHub\SuperServer\SuperServerTest\SuperServerTest\bin\Debug\SuperServerTest.exe.config
+C:\Users\mougao\Documents\GitHub\SuperServer\SuperServerTest\SuperServerTest\bin\Debug\SuperServerTest.exe
+C:\Users\mougao\Documents\GitHub\SuperServer\SuperServerTest\SuperServerTest\bin\Debug\SuperServerTest.pdb
+C:\Users\mougao\Documents\GitHub\SuperServer\SuperServerTest\SuperServerTest\bin\Debug\SuperServer.dll
+C:\Users\mougao\Documents\GitHub\SuperServer\SuperServerTest\SuperServerTest\bin\Debug\SuperServer.pdb
+C:\Users\mougao\Documents\GitHub\SuperServer\SuperServerTest\SuperServerTest\obj\Debug\SuperServerTest.csprojAssemblyReference.cache
+C:\Users\mougao\Documents\GitHub\SuperServer\SuperServerTest\SuperServerTest\obj\Debug\SuperServerTest.csproj.CoreCompileInputs.cache
+C:\Users\mougao\Documents\GitHub\SuperServer\SuperServerTest\SuperServerTest\obj\Debug\SuperServerTest.csproj.CopyComplete
+C:\Users\mougao\Documents\GitHub\SuperServer\SuperServerTest\SuperServerTest\obj\Debug\SuperServerTest.exe
+C:\Users\mougao\Documents\GitHub\SuperServer\SuperServerTest\SuperServerTest\obj\Debug\SuperServerTest.pdb
